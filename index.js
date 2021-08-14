@@ -14,9 +14,16 @@ app.use(express.urlencoded({
 app.use(express.json());
 
 // Connect to DB
+const uri = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@cluster-free.5gk0p.mongodb.net/${process.env.DBNAME}?retryWrites=true&w=majority`
+
+mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true})
+.then(() => console.log('Data Base connected'))
+.catch(e => console.error('error DB', e));
 
 // Import Routers
 const authRouter = require('./routes/auth');
+
+
 
 
 // Route middlewares
