@@ -16,14 +16,19 @@ app.use(express.json());
 // Connect to DB
 
 // Import Routers
+const authRouter = require('./routes/auth');
+
 
 // Route middlewares
+
 app.get('/', (req, res) => {
     res.json({
         status: true,
         messaje: 'It\'s works!'
     });
 });
+
+app.use('/api/user', authRouter);
 
 // Init Server
 app.listen(PORT, ()=> { console.log(`Server is listen in http://localhost:${PORT}`);
