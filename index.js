@@ -1,16 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyparser = require('body-parser'); // It's is deprecated
+// const bodyParser  = require('body-parser'); // It's is deprecated. Now used express
 require('dotenv').config();
 const PORT = process.env.PORT || 3000;
 
 const app = express();
 
 // Get Body
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
-app.use(bodyParser.json());
+app.use(express.urlencoded({
+    extended: true
+  }));
+
+app.use(express.json());
 
 // Connect to DB
 
@@ -26,4 +27,4 @@ app.get('/', (req, res) => {
 
 // Init Server
 app.listen(PORT, ()=> { console.log(`Server is listen in http://localhost:${PORT}`);
-})
+});
