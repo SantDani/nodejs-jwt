@@ -22,8 +22,8 @@ mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true})
 
 // Import Routers
 const authRouter = require('./routes/auth');
-
-
+const verificationToken = require('./routes/validate-token');
+const dasboardRoutes = require('./routes/dashboard');
 
 
 // Route middlewares
@@ -36,6 +36,16 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/user', authRouter);
+app.use('/api/dashboard', verificationToken, dasboardRoutes);
+
+
+const cors = require('cors');
+
+const corsOptions ={
+    origin: '*',
+    optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 
 // Init Server
 app.listen(PORT, ()=> { console.log(`Server is listen in http://localhost:${PORT}`);
