@@ -4,6 +4,8 @@ const User = require('../models/User');
 const Joi = require('@hapi/joi');
 const bcrypt = require('bcrypt');
 
+const jwt = require('jsonwebtoken');
+
 const schemaRegister = Joi.object({
     name: Joi.string().min(6).max(255).required(),
     email: Joi.string().min(6).max(200).required().email(),
@@ -87,10 +89,17 @@ router.post('/login', async(req, res) => {
         return res.status(400).json({error: 'incorrect password'});
     }
 
+    const token = jwt.sign({
+        name: user.name,
+        id: user._id
+    }, process.env.TOKEN_SECRET);
+
     res.json({
         error: null,
-        data: 'Login corrrect. User is Log in.' // Todo generate JWT
-    })
+        message: 'Login corrrect. User is Log in.',
+        data: {token}
+    });
 })
+
 
 module.exports = router;
