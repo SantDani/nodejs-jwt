@@ -6,7 +6,7 @@ const Joi = require('@hapi/joi');
 const schemaRegister = Joi.object({
     name: Joi.string().min(6).max(255).required(),
     email: Joi.string().min(6).max(255).required().email(),
-    password: Joi.string().min(6).max(1024).required()
+    password: Joi.string().min(6).max(50).required()
 })
 
 router.post('/register', async(req, res) => {
@@ -19,6 +19,12 @@ router.post('/register', async(req, res) => {
             return res.status(400).json(
                 {error: error.details[0].message}
             )
+        }
+
+        const isEmailExist = await User.findOne({email: req.body.email});
+
+        if(isEmailExist){
+            return res.status(400).json({ error: 'Email is registred'});
         }
     }catch(e){
         console.error(e);
