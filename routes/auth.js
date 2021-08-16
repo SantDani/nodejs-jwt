@@ -2,6 +2,7 @@ const router = require('express').Router();
 const User = require('../models/User');
 
 const Joi = require('@hapi/joi');
+const bcrypt = require('bcrypt');
 
 const schemaRegister = Joi.object({
     name: Joi.string().min(6).max(255).required(),
@@ -11,6 +12,7 @@ const schemaRegister = Joi.object({
 
 router.post('/register', async(req, res) => {
 
+    let passwordHash = '';
     try{
         const { error } = schemaRegister.validate(req.body)
     
@@ -21,11 +23,18 @@ router.post('/register', async(req, res) => {
             )
         }
 
+        // unique email
         const isEmailExist = await User.findOne({email: req.body.email});
 
         if(isEmailExist){
             return res.status(400).json({ error: 'Email is registred'});
         }
+
+        // hash password
+
+        const salt = await bcrypt.genSalt(15);
+        passwordHash =  await bcrypt.hash(req.body.password, salt);
+
     }catch(e){
         console.error(e);
     }
@@ -35,7 +44,7 @@ router.post('/register', async(req, res) => {
         const user = new User({
             name: req.body.name,
             email: req.body.email,
-            password: req.body.password
+            password: passwordHash
         });
     
         // console.log('BODY', req.body);
@@ -48,7 +57,7 @@ router.post('/register', async(req, res) => {
         });
     }catch (e) {
         console.error(e)
-        res.status(400).json({e});
+        res.status(400).json({e, message: 'error register'});
     }
     
     // TODO Fix server down when someone dont send data correct
