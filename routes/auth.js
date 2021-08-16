@@ -6,8 +6,8 @@ const bcrypt = require('bcrypt');
 
 const schemaRegister = Joi.object({
     name: Joi.string().min(6).max(255).required(),
-    email: Joi.string().min(6).max(255).required().email(),
-    password: Joi.string().min(6).max(50).required()
+    email: Joi.string().min(6).max(200).required().email(),
+    password: Joi.string().min(6).max(100).required()
 })
 
 router.post('/register', async(req, res) => {
@@ -61,6 +61,36 @@ router.post('/register', async(req, res) => {
     }
     
     // TODO Fix server down when someone dont send data correct
+})
+
+const schemaLogin = Joi.object({
+    email: Joi.string().min(6).max(200).required().email(),
+    password: Joi.string().min(6).max(100).required()
+})
+
+router.post('/login', async(req, res) => {
+    
+    // validate
+    const {error} = schemaLogin.validate(req.body);
+    if(error) {
+        return res.status(400).json({error: error.details[0].message});
+    }
+
+    const user = await User.findOne({email: req.body.email});
+    console.log(user);
+    if(!user){
+        return res.status(400).json({error: 'user not found'});
+    }
+
+    const validPassowrd = await bcrypt.compare(req.body.password, user.password);
+    if(!validPassowrd){ 
+        return res.status(400).json({error: 'incorrect password'});
+    }
+
+    res.json({
+        error: null,
+        data: 'Login corrrect. User is Log in.' // Todo generate JWT
+    })
 })
 
 module.exports = router;
