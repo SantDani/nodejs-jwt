@@ -2,7 +2,8 @@ const router = require('express').Router();
 
 router.get('/', (req, res) => {
 
-    console.log('open dashboard', req.user);
+    // console.log('open dashboard', req.user);
+    console.log('open dashboard');
     res.json({
         error: null,
         data: {

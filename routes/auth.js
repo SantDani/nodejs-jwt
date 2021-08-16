@@ -19,7 +19,7 @@ router.post('/register', async(req, res) => {
         const { error } = schemaRegister.validate(req.body)
     
         if (error) {
-            console.log('log - ', error.details[0].message);
+            // console.log('log - ', error.details[0].message);
             return res.status(400).json(
                 {error: error.details[0].message}
             )
@@ -79,7 +79,7 @@ router.post('/login', async(req, res) => {
     }
 
     const user = await User.findOne({email: req.body.email});
-    console.log(user);
+    // console.log(user);
     if(!user){
         return res.status(400).json({error: 'user not found'});
     }
